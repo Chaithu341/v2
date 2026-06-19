@@ -1,0 +1,98 @@
+#==============================================================================
+#  hemt.par  --  Material parameters for AlN/GaN HEMT
+#  (Soni & Shrivastava, IEEE JEDS Vol.8, 2020)
+#
+#  Calibration knobs:
+#    * Vsat0 (GaN)          -> sets fT (peak ~328 GHz target)
+#    * FixedCharge (in .cmd) -> sets 2DEG ns (>1e13 cm^-2 for 3.5nm AlN)
+#    * Schottky Barrier (in .cmd) -> sets Vth (normally-ON, Vth<0)
+#    * vanOverstraetendeMan -> GaN Ecrit ~ 3 MV/cm (Chynoweth)
+#
+#  NOTE: Synopsys ships validated GaN/AlN/AlGaN files in
+#        $STROOT/tcad/$STRELEASE/lib/sdevice/MaterialDB/.
+#        This file overrides only the parameters relevant to calibration; for a
+#        production run you may prefer to start from the shipped files and edit.
+#==============================================================================
+
+#------------------------------------------------------------------------------
+Material = "GaN" {
+   Epsilon            { epsilon = 9.5 }
+   LatticeHeatCapacity{ cv = 2.65 }                 # J/(K cm^3)
+   Kappa              { kappa = 1.6 }               # W/(K cm)
+
+   Bandgap {
+      Chi0  = 4.1
+      Eg0   = 3.42
+      alpha = 9.09e-4
+      beta  = 830
+      Tpar  = 0
+   }
+   eDOSMass { Nc300 = 2.3e18 }
+   hDOSMass { Nv300 = 4.6e19 }
+
+   # --- High-field velocity (dominant fT knob) ---
+   # GaN vsat ~ 2.0e7 cm/s; calibrate this to hit fT.
+   HighFieldDependence {
+      Vsat_Formula = 2
+      Vsat0 = 2.0e7    betan = 2.0    betap = 1.0
+   }
+
+   ConstantMobility {
+      mumax_n = 1200   mumax_p = 20
+      Exponent_n = 1.0 Exponent_p = 1.0
+   }
+
+   # Masetti doping-dependent mobility (C-dopant scattering)
+   DopingDependence ( Masetti ) {
+      mumin1_n = 65    mumin2_n = 65   mu1_n = 0
+      Pc_n = 0    Cr_n = 1e17   Cs_n = 1e20
+      alpha_n = 0.71  beta_n = 2.0
+      mumin1_p = 10    mumin2_p = 10   mu1_p = 0
+      Pc_p = 0    Cr_p = 1e17   Cs_p = 1e20
+      alpha_p = 0.70  beta_p = 2.0
+   }
+
+   # Impact ionization: van Overstraeten-de Man (Chynoweth form).
+   # alpha = gamma*a*exp(-b*gamma/E).  With Ecrit = b (default), choosing
+   # b ~ 3.4e6...4.5e6 V/cm gives an avalanche onset near 3 MV/cm for GaN.
+   # Two field ranges (low/high) and two carriers (n,p) are REQUIRED as pairs.
+   vanOverstraetendeMan {
+      a(low)  = 4.0900e8 , 4.0900e8     # [1/cm]  (electron , hole)
+      a(high) = 4.0900e8 , 4.0900e8     # [1/cm]
+      b(low)  = 3.4000e7 , 3.4000e7     # [V/cm]
+      b(high) = 3.4000e7 , 3.4000e7     # [V/cm]
+      E0      = 4.0000e5 , 4.0000e5     # [V/cm]
+      hbarOmega = 0.092  , 0.092        # [eV]   GaN phonon energy
+      lambda  = 6.5e-7   , 6.5e-7       # [cm]
+   }
+}
+
+#------------------------------------------------------------------------------
+Material = "AlN" {
+   Epsilon            { epsilon = 8.5 }
+   LatticeHeatCapacity{ cv = 2.43 }
+   Kappa              { kappa = 2.85 }
+   Bandgap {
+      Chi0  = 1.9
+      Eg0   = 6.2
+      alpha = 1.799e-3
+      beta  = 1462
+      Tpar  = 0
+   }
+   eDOSMass { Nc300 = 6.3e18 }
+   hDOSMass { Nv300 = 4.9e20 }
+}
+
+#------------------------------------------------------------------------------
+Material = "Si3N4" {
+   Epsilon { epsilon = 7.5 }
+   Bandgap { Chi0 = 2.0  Eg0 = 5.0 }
+   Kappa   { kappa = 0.2 }
+}
+
+#------------------------------------------------------------------------------
+Material = "SiC" {
+   Epsilon { epsilon = 9.7 }
+   Bandgap { Chi0 = 3.6  Eg0 = 3.26 }
+   Kappa   { kappa = 3.7 }
+}
