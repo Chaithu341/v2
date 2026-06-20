@@ -1,0 +1,54 @@
+# calibration_targets.csv
+# Targets for the AlN/GaN DH-HEMT (Soni & Shrivastava JEDS 2020, Fig.1;
+# device & data from Shinohara et al., IEDM 2011, D-mode). Currents in A/mm.
+#
+# VERIFIED device metrics (Shinohara IEDM 2011, 20-nm D-mode):
+#   Vth = -1.44 V ; Idmax = 2.7 A/mm ; Ron = 0.29 ohm.mm
+#   peak extrinsic gm = 1.04 S/mm @ Vds = 5 V
+#   ns = 1.2e13 cm^-2 ; mu = 1200 cm2/Vs ; vave = 1.5e7 cm/s @ Vds=5V
+#   fT/fmax = 310/364 GHz (exp) ; fT = 328 GHz (sim, JEDS)
+#   n+ regrown ohmic 7e19 cm^-3 ; access R ~0.1 ohm.mm ; Lg/Lsd = 20/100 nm
+#
+# Read-offs below are digitized from JEDS Fig.1(c)/(d) as calibration anchors.
+# type, bias_fixed_V, sweep_V, value
+#
+# ---- (d) OUTPUT  ID-VDS at fixed VGS (A/mm) ----
+output, VGS=-2, 1.0, 0.03
+output, VGS=-2, 3.0, 0.08
+output, VGS=-2, 5.0, 0.10
+output, VGS=-1, 1.0, 0.30
+output, VGS=-1, 3.0, 0.50
+output, VGS=-1, 5.0, 0.60
+output, VGS=0,  1.0, 0.85
+output, VGS=0,  3.0, 1.25
+output, VGS=0,  5.0, 1.50
+output, VGS=1,  1.0, 1.45
+output, VGS=1,  3.0, 2.00
+output, VGS=1,  5.0, 2.25
+output, VGS=2,  1.0, 1.80
+output, VGS=2,  3.0, 2.45
+output, VGS=2,  5.0, 2.70
+#
+# ---- (c) TRANSFER  ID-VGS at fixed VDS (A/mm) ; Vth=-1.44 V ----
+transfer, VDS=1, -2.0, 0.02
+transfer, VDS=1, -1.0, 0.30
+transfer, VDS=1,  0.0, 0.85
+transfer, VDS=1,  1.0, 1.45
+transfer, VDS=1,  2.0, 2.00
+transfer, VDS=5, -2.0, 0.05
+transfer, VDS=5, -1.0, 0.55
+transfer, VDS=5,  0.0, 1.45
+transfer, VDS=5,  1.0, 2.25
+transfer, VDS=5,  2.0, 2.70
+#
+# ---- scalar device metrics (checked by name, not interpolated) ----
+metric, Vth_V, 0, -1.44
+metric, Idmax_Apmm, 0, 2.7
+metric, Ron_ohmmm, 0, 0.29
+metric, gm_peak_Spmm, 0, 1.04
+metric, ns_cm2, 0, 1.2e13
+#
+# ---- (b) CUTOFF FREQUENCY ----
+fT, sim, 0, 328e9
+fT, exp, 0, 310e9
+
